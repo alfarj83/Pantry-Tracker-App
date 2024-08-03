@@ -1,8 +1,8 @@
 'use client'
-import Image from "next/image";
 import { useState, useEffect } from 'react'
 import { firestore } from '@/firebase'
 import { Box, Typography, Stack, Button, Modal, TextField } from '@mui/material'
+import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
 import {
   collection,
   doc,
@@ -17,8 +17,8 @@ const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
+  width: '100%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
   bgcolor: 'white',
   border: '2px solid #000',
   boxShadow: 24,
@@ -32,6 +32,13 @@ export default function Home() {
   const [inventory, setInventory] = useState([])
   const [open, setOpen] = useState(false)
   const [itemName, setItemName] = useState('')
+  const Search = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearch= (event) => {
+      searSearchTerm(event.target.value);
+    }
+  }
 
   //updates inventory to match database status
   const updateInventory = async () => {
@@ -76,7 +83,6 @@ export default function Home() {
     updateInventory()
   }, [])
 
-
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
@@ -89,6 +95,7 @@ export default function Home() {
     alignItems={'center'}
     gap={2}
   >
+
     <Modal
       open={open}
       onClose={handleClose}
@@ -124,6 +131,14 @@ export default function Home() {
     <Button variant="contained" onClick={handleOpen}>
       Add New Item
     </Button>
+    <TextField 
+      label="Search"
+      variant="outlined"
+      value={searchTerm}
+      onChange={handleSearch}
+      fullWidth
+      />
+
     <Box border={'1px solid #333'}>
       <Box
         width="800px"
@@ -134,7 +149,7 @@ export default function Home() {
         alignItems={'center'}
       >
         <Typography variant={'h2'} color={'#333'} textAlign={'center'}>
-          Inventory Items
+          My Pantry
         </Typography>
       </Box>
       <Stack width="800px" height="300px" spacing={2} overflow={'auto'}>
