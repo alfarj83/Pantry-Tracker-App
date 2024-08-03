@@ -1,8 +1,23 @@
 'use client'
-import { useState, useEffect } from 'react'
+import {useEffect, useState } from 'react'
 import { firestore } from '@/firebase'
-import { Box, Typography, Stack, Button, Modal, TextField } from '@mui/material'
-import { RichTreeView } from '@mui/x-tree-view/RichTreeView'
+import { 
+  Box, 
+  Typography, 
+  Stack, 
+  Button, 
+  Modal, 
+  TextField, 
+  BottomNavigation, 
+  BottomNavigationAction, 
+  AppBar, 
+  Toolbar, 
+  IconButton 
+} from '@mui/material'
+import RestoreIcon  from '@mui/icons-material/Restore'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import MenuIcon from '@mui/icons-material/Menu'
 import {
   collection,
   doc,
@@ -17,12 +32,12 @@ const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
-  width: '100%',
   transform: 'translate(-50%, -50%)',
   bgcolor: 'white',
+  width: 400,
   border: '2px solid #000',
-  boxShadow: 24,
   p: 4,
+  boxShadow: 24,
   display: 'flex',
   flexDirection: 'column',
   gap: 3,
@@ -32,13 +47,6 @@ export default function Home() {
   const [inventory, setInventory] = useState([])
   const [open, setOpen] = useState(false)
   const [itemName, setItemName] = useState('')
-  const Search = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const handleSearch= (event) => {
-      searSearchTerm(event.target.value);
-    }
-  }
 
   //updates inventory to match database status
   const updateInventory = async () => {
@@ -86,8 +94,11 @@ export default function Home() {
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
+  // stuff for bottom navbar
+  const [value, setValue] = useState(0)
+
   return <Box
-    width="100vw"
+    width= "100vw"
     height="100vh"
     display={'flex'}
     justifyContent={'center'}
@@ -95,7 +106,16 @@ export default function Home() {
     alignItems={'center'}
     gap={2}
   >
-
+    <AppBar>
+      <Toolbar variant="dense">
+        <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" color="inherit" component="div">
+          Pantry Tracker
+        </Typography>
+      </Toolbar>
+    </AppBar>
     <Modal
       open={open}
       onClose={handleClose}
@@ -131,18 +151,10 @@ export default function Home() {
     <Button variant="contained" onClick={handleOpen}>
       Add New Item
     </Button>
-    <TextField 
-      label="Search"
-      variant="outlined"
-      value={searchTerm}
-      onChange={handleSearch}
-      fullWidth
-      />
-
-    <Box border={'1px solid #333'}>
+    <Box border={'2px solid #652A0E'}>
       <Box
-        width="800px"
-        beight="100px"
+        width="100%"
+        height="100px"
         bgcolor={'#ADD8E6'}
         display="flex"
         justifyContent={'center'}
@@ -152,7 +164,7 @@ export default function Home() {
           My Pantry
         </Typography>
       </Box>
-      <Stack width="800px" height="300px" spacing={2} overflow={'auto'}>
+      <Stack width="100%" height="300px" spacing={2} overflow={'auto'}>
         {inventory.map(({name, quantity}) => (
           <Box
             key={name}
@@ -176,6 +188,19 @@ export default function Home() {
           </Box>
         ))}
       </Stack>
+    </Box>
+    <Box sx={{ width: "100vw"}}>
+      <BottomNavigation
+        showLabels
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue)
+        }}
+      >
+        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
+        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
+        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+      </BottomNavigation>
     </Box>
   </Box>
 }
