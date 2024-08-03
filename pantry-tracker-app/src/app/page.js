@@ -12,12 +12,21 @@ import {
   BottomNavigationAction, 
   AppBar, 
   Toolbar, 
-  IconButton 
+  IconButton,
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material'
 import RestoreIcon  from '@mui/icons-material/Restore'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import MenuIcon from '@mui/icons-material/Menu'
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
 import {
   collection,
   doc,
@@ -97,6 +106,41 @@ export default function Home() {
   // stuff for bottom navbar
   const [value, setValue] = useState(0)
 
+  //stuff for top menu
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen)
+  }
+
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
   return <Box
     width= "100vw"
     height="100vh"
@@ -109,7 +153,10 @@ export default function Home() {
     <AppBar>
       <Toolbar variant="dense">
         <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-          <MenuIcon />
+          <MenuIcon onClick={toggleDrawer(true)} />
+          <Drawer open={open} onClose={toggleDrawer(false)}>
+            {DrawerList}
+          </Drawer>
         </IconButton>
         <Typography variant="h6" color="inherit" component="div">
           Pantry Tracker
@@ -169,20 +216,20 @@ export default function Home() {
           <Box
             key={name}
             width="100%"
-            minHeight="150px"
+            minHeight="100px"
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
-            bgcolor={'#f0f0f0'}
+            bgcolor={'#CEBAAB'}
             paddingX={5}
           >
             <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
               {name.charAt(0).toUpperCase() + name.slice(1)}
             </Typography>
-            <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
+            <Typography variant={'h4'} color={'#333'} textAlign={'center'}>
               Quantity: {quantity}
             </Typography>
-            <Button variant="contained" onClick={() => removeItem(name)}>
+            <Button width="50px" variant="contained" onClick={() => removeItem(name)}>
               Remove
             </Button>
           </Box>
