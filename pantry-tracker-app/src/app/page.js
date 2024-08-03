@@ -54,7 +54,8 @@ const style = {
 
 export default function Home() {
   const [inventory, setInventory] = useState([])
-  const [open, setOpen] = useState(false)
+  // bools for add item button
+  const [openItem, setOpenItem] = useState(false)
   const [itemName, setItemName] = useState('')
 
   //updates inventory to match database status
@@ -99,16 +100,18 @@ export default function Home() {
   useEffect(() => {
     updateInventory()
   }, [])
-
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  
+  //for add item button
+  const handleOpen = () => setOpenItem(true)
+  const handleClose = () => setOpenItem(false)
 
   // stuff for bottom navbar
   const [value, setValue] = useState(0)
 
   //stuff for top menu
+  const [openDrawer, setOpenDrawer] = useState(false)
   const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen)
+    setOpenDrawer(newOpen)
   }
 
   const DrawerList = (
@@ -148,13 +151,14 @@ export default function Home() {
     justifyContent={'center'}
     flexDirection={'column'}
     alignItems={'center'}
+    backgroundColor='#bfd4af'
     gap={2}
   >
-    <AppBar>
+    <AppBar sx={{ backgroundColor: '#c29243' }}>
       <Toolbar variant="dense">
         <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon onClick={toggleDrawer(true)} />
-          <Drawer open={open} onClose={toggleDrawer(false)}>
+          <Drawer open={openDrawer} onClose={toggleDrawer(false)}>
             {DrawerList}
           </Drawer>
         </IconButton>
@@ -164,7 +168,7 @@ export default function Home() {
       </Toolbar>
     </AppBar>
     <Modal
-      open={open}
+      open={openItem}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -200,18 +204,19 @@ export default function Home() {
     </Button>
     <Box border={'2px solid #652A0E'}>
       <Box
-        width="100%"
+        width="500px"
         height="100px"
         bgcolor={'#ADD8E6'}
         display="flex"
         justifyContent={'center'}
         alignItems={'center'}
+        backgroundColor={"#623c57"}
       >
-        <Typography variant={'h2'} color={'#333'} textAlign={'center'}>
+        <Typography variant={'h2'} color={'white'} textAlign={'center'} backgroundColor={"#623c57"}>
           My Pantry
         </Typography>
       </Box>
-      <Stack width="100%" height="300px" spacing={2} overflow={'auto'}>
+      <Stack width="500px" height="300px" spacing={2} overflow={'auto'}>
         {inventory.map(({name, quantity}) => (
           <Box
             key={name}
@@ -237,12 +242,13 @@ export default function Home() {
       </Stack>
     </Box>
     <Box sx={{ width: "100vw"}}>
-      <BottomNavigation
+      <BottomNavigation 
         showLabels
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue)
         }}
+        sx={{ position: "fixed", bottom: 0, width: "100vw", backgroundColor: "#c49346"}}
       >
         <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
         <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
