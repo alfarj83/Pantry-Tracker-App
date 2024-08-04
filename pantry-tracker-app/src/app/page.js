@@ -21,10 +21,9 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import RestoreIcon  from '@mui/icons-material/Restore'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
-import MenuIcon from '@mui/icons-material/Menu'
+import TextFieldsIcon from '@mui/icons-material/TextFields';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import {
@@ -50,6 +49,8 @@ const style = {
   display: 'flex',
   flexDirection: 'column',
   gap: 3,
+  backgroundColor: '#b0913e',
+  borderRadius: '8px'
 }
 
 export default function Home() {
@@ -145,16 +146,16 @@ export default function Home() {
   );
 
   return <Box
-    width= "100vw"
+    width="100vw"
     height="100vh"
     display={'flex'}
     justifyContent={'center'}
     flexDirection={'column'}
     alignItems={'center'}
-    backgroundColor='#bfd4af'
+    backgroundColor='white'
     gap={2}
   >
-    <AppBar sx={{ backgroundColor: '#c29243' }}>
+    <AppBar sx={{ backgroundColor: '#5e3a47' }}>
       <Toolbar variant="dense">
         <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon onClick={toggleDrawer(true)} />
@@ -167,6 +168,13 @@ export default function Home() {
         </Typography>
       </Toolbar>
     </AppBar>
+    <Box sx={{ width: "90vw", display: 'flex', justifyContent: 'center', p: 1 }}>
+      <TextField
+        fullWidth
+        label="Search"
+        variant="outlined"
+      />
+    </Box>
     <Modal
       open={openItem}
       onClose={handleClose}
@@ -174,11 +182,11 @@ export default function Home() {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
+        <Typography color='#fff' id="modal-modal-title" variant="h6" component="h2">
           Add item
         </Typography>
-        <Stack width="100%" direction={'row'} spacing={2}>
-          <TextField 
+        <Stack width="100%" direction={'row'} spacing={1}>
+          <TextField
             id="outlined-basic"
             label="Item"
             variant="outlined"
@@ -199,24 +207,32 @@ export default function Home() {
         </Stack>
       </Box>
     </Modal>
-    <Button variant="contained" onClick={handleOpen}>
+    <Button sx={{ backgroundColor: '#c29243', color: '#fff' }} variant="contained" onClick={handleOpen}>
       Add New Item
     </Button>
-    <Box border={'2px solid #652A0E'}>
+    <Box 
+      sx={{
+        width: '90vw',
+        border: '4px solid #c29243',
+        borderRadius: '8px',
+        overflow: 'hidden',
+      }}
+    >
       <Box
-        width="500px"
-        height="100px"
-        bgcolor={'#ADD8E6'}
-        display="flex"
-        justifyContent={'center'}
-        alignItems={'center'}
-        backgroundColor={"#623c57"}
+        sx={{
+          width: '90vw',
+          height: '100px',
+          bgcolor: '#c29243',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
       >
-        <Typography variant={'h2'} color={'white'} textAlign={'center'} backgroundColor={"#623c57"}>
+        <Typography variant={'h2'} color={'white'} textAlign={'center'}>
           My Pantry
         </Typography>
       </Box>
-      <Stack width="500px" height="300px" spacing={2} overflow={'auto'}>
+      <Stack width="90vw" height="300px" overflow={'auto'}>
         {inventory.map(({name, quantity}) => (
           <Box
             key={name}
@@ -225,16 +241,17 @@ export default function Home() {
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
-            bgcolor={'#CEBAAB'}
+            bgcolor={'white'}
             paddingX={5}
+            border={'1px solid #c29243'}
           >
-            <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
+            <Typography variant={'h3'} color={'#5e3a47'} textAlign={'center'}>
               {name.charAt(0).toUpperCase() + name.slice(1)}
             </Typography>
-            <Typography variant={'h4'} color={'#333'} textAlign={'center'}>
+            <Typography variant={'h4'} color={'#5e3a47'} textAlign={'center'}>
               Quantity: {quantity}
             </Typography>
-            <Button width="50px" variant="contained" onClick={() => removeItem(name)}>
+            <Button sx={{ backgroundColor: '#5e3a47', color: '#fff' }} width="50px" variant="contained" onClick={() => removeItem(name)}>
               Remove
             </Button>
           </Box>
@@ -248,11 +265,22 @@ export default function Home() {
         onChange={(event, newValue) => {
           setValue(newValue)
         }}
-        sx={{ position: "fixed", bottom: 0, width: "100vw", backgroundColor: "#c49346"}}
+        sx={{ position: "fixed", bottom: 0, width: "100vw", backgroundColor: "#5e3a47"}}
       >
-        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+        <BottomNavigationAction label="Use Text" icon={<TextFieldsIcon sx={{color: 'white'}} />} 
+          sx={{
+            '& .MuiBottomNavigationAction-label': {
+              color: 'white',
+            },
+          }}
+        />
+        <BottomNavigationAction label="Use Camera" icon={<CameraAltIcon sx={{color: 'white'}}/>} 
+        sx={{
+          '& .MuiBottomNavigationAction-label': {
+            color: 'white',
+          },
+        }}
+      />
       </BottomNavigation>
     </Box>
   </Box>
