@@ -219,20 +219,6 @@ export default function Home() {
         overflow: 'hidden',
       }}
     >
-      <Box
-        sx={{
-          width: '90vw',
-          height: '100px',
-          bgcolor: '#c29243',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Typography variant={'h2'} color={'white'} textAlign={'center'}>
-          My Pantry
-        </Typography>
-      </Box>
       <Stack width="90vw" height="300px" overflow={'auto'}>
         {inventory.map(({name, quantity}) => (
           <Box
