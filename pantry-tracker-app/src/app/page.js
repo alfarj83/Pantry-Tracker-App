@@ -45,14 +45,14 @@ const style = {
   transform: 'translate(-50%, -50%)',
   bgcolor: 'white',
   width: 400,
-  border: '2px solid #000',
+  border: '8px solid #c29243',
   p: 4,
   boxShadow: 24,
   display: 'flex',
   flexDirection: 'column',
   gap: 3,
-  backgroundColor: '#b0913e',
-  borderRadius: '8px'
+  backgroundColor: 'white',
+  borderRadius: '8px',
 };
 
 export default function Home() {
@@ -62,7 +62,6 @@ export default function Home() {
   // for adding items
   const [openItem, setOpenItem] = useState(false)
   const [itemName, setItemName] = useState('')
-  // for add item button
   const handleOpen = () => setOpenItem(true)
   const handleClose = () => setOpenItem(false)
   // for bottom navbar
@@ -72,6 +71,10 @@ export default function Home() {
   // for search/filter
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredItems, setFilteredItems] = useState([])
+  // for authentication
+  const [openAcc, setOpenAcc] = useState(false)
+  const handleOpenSignIn = () => setOpenAcc(true)
+  const handleCloseSignIn = () => setOpenAcc(false)
 
   /* ALL FUNCTIONS */
   //updates inventory to match database status
@@ -122,7 +125,6 @@ export default function Home() {
   const toggleDrawer = (newOpen) => () => {
     setOpenDrawer(newOpen)
   }
-
   //sidebar categories
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -175,7 +177,7 @@ export default function Home() {
     backgroundColor='white'
     gap={2}
   >
-    <AppBar sx={{ backgroundColor: '#5e3a47' }}>
+    <AppBar sx={{ backgroundColor: '#5e3a47'}}>
       <Toolbar variant="dense">
         <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon onClick={toggleDrawer(true)} />
@@ -186,7 +188,48 @@ export default function Home() {
         <Typography variant="h6" color="inherit" component="div">
           Pantry Tracker
         </Typography>
+        <Button sx={{ ml: 'auto', backgroundColor: '#c29243', color: '#fff', '&:hover': { backgroundColor: '#7a5f6e'}}}  
+          variant='contained' 
+          onClick={handleOpenSignIn}
+        >
+          Sign In
+        </Button>
       </Toolbar>
+      <Modal
+      open={openAcc}
+      onClose={handleCloseSignIn}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <Typography color='black' id="modal-modal-title" variant="h6" component="h2">
+          Sign In
+        </Typography>
+        <Stack width="100%" direction={'column'} spacing={1} display='flex'>
+          <TextField
+            id="outlined-basic"
+            label="Username"
+            variant="outlined"
+            fullWidth
+          />
+          <TextField
+            id="outlined-basic"
+            label='Password'
+            variant="outlined"
+            fullWidth
+          />
+          <Button sx={{ border: '1px solid', variant: 'outlined', width: '75%'}}
+            onClick={() => {
+              addItem(itemName)
+              setItemName('')
+              handleCloseSignIn()
+            }}
+          >
+            Enter
+          </Button>
+        </Stack>
+      </Box>
+    </Modal>
     </AppBar>
     <Box sx={{ width: "90vw", display: 'flex', justifyContent: 'center', p: 1 }}>
       <TextField
@@ -211,7 +254,7 @@ export default function Home() {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography color='#fff' id="modal-modal-title" variant="h6" component="h2">
+        <Typography color='black' id="modal-modal-title" variant="h6" component="h2">
           Add item
         </Typography>
         <Stack width="100%" direction={'row'} spacing={1}>
@@ -223,8 +266,7 @@ export default function Home() {
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
           />
-          <Button
-            variant="outlined"
+          <Button sx={{ border: '1px solid', variant: 'outlined'}}
             onClick={() => {
               addItem(itemName)
               setItemName('')
@@ -236,7 +278,7 @@ export default function Home() {
         </Stack>
       </Box>
     </Modal>
-    <Button sx={{ backgroundColor: '#c29243', color: '#fff' }} variant="contained" onClick={handleOpen}>
+    <Button sx={{ backgroundColor: '#c29243', color: '#fff', '&:hover': { backgroundColor: '#7a5f6e'}}}  variant='contained' onClick={handleOpen}>
       Add New Item
     </Button>
     <Box 
