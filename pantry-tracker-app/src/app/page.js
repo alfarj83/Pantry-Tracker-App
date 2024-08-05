@@ -161,7 +161,7 @@ export default function Home() {
       } else {
         setFilteredItems(inventory);
       }
-    }, [searchQuery]) 
+    }, [searchQuery, inventory]) 
 
   return <Box
     width="100vw"
