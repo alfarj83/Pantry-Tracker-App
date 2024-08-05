@@ -25,8 +25,8 @@ import {
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import MenuIcon from '@mui/icons-material/Menu';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import CreateIcon from '@mui/icons-material/Create';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   collection,
@@ -96,6 +96,7 @@ export default function Home() {
       await setDoc(docRef, { quantity: 1 })
     }
     await updateInventory()
+    alert('Item added successfully!')
   }
 
   //removes items from database
@@ -111,6 +112,7 @@ export default function Home() {
       }
     }
     await updateInventory()
+    alert('Item removed successfully!')
   }
   useEffect(() => {
     updateInventory()
@@ -125,11 +127,11 @@ export default function Home() {
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+        {['General'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <RestaurantIcon/>
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -138,11 +140,11 @@ export default function Home() {
       </List>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+        {['Fruits', 'Vegetables', 'Grains', 'Protein', 'Dairy'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <CreateIcon />
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
