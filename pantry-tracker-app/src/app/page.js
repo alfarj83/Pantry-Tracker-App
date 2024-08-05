@@ -1,7 +1,6 @@
 'use client'
-import { Analytics } from "@vercel/analytics/react"
-import {useEffect, useState } from 'react'
-import { firestore } from '@/firebase'
+import { useEffect, useState } from 'react';
+import { firestore } from '@/firebase';
 import { 
   Box, 
   Typography, 
@@ -21,12 +20,14 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-} from '@mui/material'
+  InputAdornment,
+} from '@mui/material';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   collection,
   doc,
@@ -35,7 +36,7 @@ import {
   setDoc,
   deleteDoc,
   getDoc,
-} from 'firebase/firestore'
+} from 'firebase/firestore';
 
 const style = {
   position: 'absolute',
@@ -52,14 +53,27 @@ const style = {
   gap: 3,
   backgroundColor: '#b0913e',
   borderRadius: '8px'
-}
+};
 
 export default function Home() {
+  /* ALL USESTATE VARIABLES */
+  // for inventory update
   const [inventory, setInventory] = useState([])
-  // bools for add item button
+  // for adding items
   const [openItem, setOpenItem] = useState(false)
   const [itemName, setItemName] = useState('')
+  // for add item button
+  const handleOpen = () => setOpenItem(true)
+  const handleClose = () => setOpenItem(false)
+  // for bottom navbar
+  const [value, setValue] = useState(0)
+  // for top menu
+  const [openDrawer, setOpenDrawer] = useState(false)
+  // for search/filter
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filteredItems, setFilteredItems] = useState([])
 
+  /* ALL FUNCTIONS */
   //updates inventory to match database status
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'))
@@ -98,24 +112,16 @@ export default function Home() {
     }
     await updateInventory()
   }
-
   useEffect(() => {
     updateInventory()
   }, [])
-  
-  //for add item button
-  const handleOpen = () => setOpenItem(true)
-  const handleClose = () => setOpenItem(false)
 
-  // stuff for bottom navbar
-  const [value, setValue] = useState(0)
-
-  //stuff for top menu
-  const [openDrawer, setOpenDrawer] = useState(false)
+  //toggles the sidebar menu
   const toggleDrawer = (newOpen) => () => {
     setOpenDrawer(newOpen)
   }
 
+  //sidebar categories
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
@@ -146,6 +152,17 @@ export default function Home() {
     </Box>
   );
 
+  //adding functionality to search bar
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = inventory.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        setFilteredItems(filtered);
+      } else {
+        setFilteredItems(inventory);
+      }
+    }, [searchQuery]) 
+
   return <Box
     width="100vw"
     height="100vh"
@@ -171,10 +188,19 @@ export default function Home() {
     </AppBar>
     <Box sx={{ width: "90vw", display: 'flex', justifyContent: 'center', p: 1 }}>
       <TextField
-        fullWidth
-        label="Search"
-        variant="outlined"
-      />
+          variant="outlined"
+          placeholder="Search Pantry..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          fullWidth
+        />
     </Box>
     <Modal
       open={openItem}
@@ -220,7 +246,7 @@ export default function Home() {
       }}
     >
       <Stack width="90vw" height="300px" overflow={'auto'}>
-        {inventory.map(({name, quantity}) => (
+        {filteredItems.map(({name, quantity}) => (
           <Box
             key={name}
             width="100%"
