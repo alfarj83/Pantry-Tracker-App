@@ -37,6 +37,9 @@ import {
   deleteDoc,
   getDoc,
 } from 'firebase/firestore';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebase';
+import { useRouter } from 'next/navigation';
 
 const style = {
   position: 'absolute',
@@ -44,7 +47,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   bgcolor: 'white',
-  width: 400,
+  width: '100%',
   border: '8px solid #c29243',
   p: 4,
   boxShadow: 24,
@@ -53,6 +56,8 @@ const style = {
   gap: 3,
   backgroundColor: 'white',
   borderRadius: '8px',
+  alignItems: 'center',
+  justifyContent: 'center',
 };
 
 export default function Home() {
@@ -75,6 +80,10 @@ export default function Home() {
   const [openAcc, setOpenAcc] = useState(false)
   const handleOpenSignIn = () => setOpenAcc(true)
   const handleCloseSignIn = () => setOpenAcc(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+  const router = useRouter()
 
   /* ALL FUNCTIONS */
   //updates inventory to match database status
@@ -167,6 +176,19 @@ export default function Home() {
       }
     }, [searchQuery, inventory]) 
 
+    // adding functionality to sign in screen
+    const handleSignIn = async () => {
+      try {
+        const res = await signInWithEmailAndPassword(email, password);
+        console.log({res});
+        setEmail('');
+        setPassword('');
+        router.push('/')
+      } catch(e) {
+        console.error(e)
+      }
+    };
+
   return <Box
     width="100vw"
     height="100vh"
@@ -205,7 +227,7 @@ export default function Home() {
         <Typography color='black' id="modal-modal-title" variant="h6" component="h2">
           Sign In
         </Typography>
-        <Stack width="100%" direction={'column'} spacing={1} display='flex'>
+        <Stack width="100%" direction={'column'} spacing={1} display='flex' alignItems='center'>
           <TextField
             id="outlined-basic"
             label="Username"
@@ -215,17 +237,15 @@ export default function Home() {
           <TextField
             id="outlined-basic"
             label='Password'
-            variant="outlined"
+            variant='outlined'
             fullWidth
           />
-          <Button sx={{ border: '1px solid', variant: 'outlined', width: '75%'}}
-            onClick={() => {
-              addItem(itemName)
-              setItemName('')
-              handleCloseSignIn()
-            }}
-          >
+          <Button sx={{ border: '1px solid #5e3a47', variant: 'outlined', width: '75%'}}
+            onClick={handleSignIn}>
             Enter
+          </Button>
+          <Button size='small' onClick={() => router.push('/sign-up')} >
+            Don't have an account?
           </Button>
         </Stack>
       </Box>
@@ -266,7 +286,7 @@ export default function Home() {
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
           />
-          <Button sx={{ border: '1px solid', variant: 'outlined'}}
+          <Button sx={{ border: '1px solid #5e3a47', variant: 'outlined'}}
             onClick={() => {
               addItem(itemName)
               setItemName('')
@@ -296,19 +316,21 @@ export default function Home() {
             width="100%"
             minHeight="100px"
             display={'flex'}
-            justifyContent={'space-between'}
             alignItems={'center'}
             bgcolor={'white'}
             paddingX={5}
             border={'1px solid #c29243'}
           >
-            <Typography variant={'h3'} color={'#5e3a47'} textAlign={'center'}>
+            <Typography variant={'h3'} color={'#5e3a47'} textAlign={'center'} pr='50px'>
               {name.charAt(0).toUpperCase() + name.slice(1)}
             </Typography>
-            <Typography variant={'h4'} color={'#5e3a47'} textAlign={'center'}>
-              Quantity: {quantity}
+            <Typography variant={'h4'} color={'#5e3a47'} textAlign={'center'} pr='10px' ml='auto'>
+              {quantity}
             </Typography>
-            <Button sx={{ backgroundColor: '#5e3a47', color: '#fff' }} width="50px" variant="contained" onClick={() => removeItem(name)}>
+            <Button sx={{ backgroundColor: '#5e3a47', color: '#fff', ml: 'auto', mr: '10px' }} width='30px' variant="contained" onClick={() => addItem(name)}>
+              Add
+            </Button>
+            <Button sx={{ backgroundColor: '#5e3a47', color: '#fff'}} width='30px' variant="contained" onClick={() => removeItem(name)}>
               Remove
             </Button>
           </Box>
