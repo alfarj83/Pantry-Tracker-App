@@ -245,7 +245,7 @@ export default function Home() {
             Enter
           </Button>
           <Button size='small' onClick={() => router.push('/sign-up')} >
-            Don't have an account?
+            Don&rsquo;t have an account?
           </Button>
         </Stack>
       </Box>

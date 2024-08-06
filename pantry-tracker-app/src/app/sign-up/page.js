@@ -23,7 +23,7 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
       e.preventDefault();
       if (password !== confirmPassword) {
-        console.error('Passwords do not match!');
+        console.error("Passwords do not match!");
         return;
       }
 
@@ -34,8 +34,6 @@ const SignUp = () => {
           setEmail('');
           setPassword('');
           setConfirmPassword('');
-
-          //alert('Account was successfully created!')
           return router.push('/');
       } catch(e) {
           console.error(e)
