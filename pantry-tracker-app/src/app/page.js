@@ -58,6 +58,7 @@ const style = {
   borderRadius: '8px',
   alignItems: 'center',
   justifyContent: 'center',
+  maxWidth: '500px',
 };
 
 export default function Home() {
@@ -224,7 +225,7 @@ export default function Home() {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography color='black' id="modal-modal-title" variant="h6" component="h2">
+        <Typography color='#5e3a47' id="modal-modal-title" variant="h6" component="h2">
           Sign In
         </Typography>
         <Stack width="100%" direction={'column'} spacing={1} display='flex' alignItems='center'>
@@ -240,11 +241,11 @@ export default function Home() {
             variant='outlined'
             fullWidth
           />
-          <Button sx={{ border: '1px solid #5e3a47', variant: 'outlined', width: '75%'}}
+          <Button sx={{ border: '1px solid #5e3a47', variant: 'outlined', width: '75%', color: '#5e3a47'}}
             onClick={handleSignIn}>
             Enter
           </Button>
-          <Button size='small' onClick={() => router.push('/sign-up')} >
+          <Button sx={{ color: '#5e3a47' }} size='small' onClick={() => router.push('/sign-up')} >
             Don&rsquo;t have an account?
           </Button>
         </Stack>
@@ -274,7 +275,7 @@ export default function Home() {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography color='black' id="modal-modal-title" variant="h6" component="h2">
+        <Typography color='#5e3a47' id="modal-modal-title" variant="h6" component="h2">
           Add item
         </Typography>
         <Stack width="100%" direction={'row'} spacing={1}>
