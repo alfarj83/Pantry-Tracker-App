@@ -25,8 +25,6 @@ import {
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import MenuIcon from '@mui/icons-material/Menu';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import CreateIcon from '@mui/icons-material/Create';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   collection,
@@ -40,138 +38,10 @@ import {
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase';
 import { useRouter } from 'next/navigation';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'white',
-  width: '100%',
-  border: '8px solid #c29243',
-  p: 4,
-  boxShadow: 24,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 3,
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  alignItems: 'center',
-  justifyContent: 'center',
-  maxWidth: '500px',
-};
+import Categories from '@/components/categories';
 
 export default function Home() {
-  /* ALL USESTATE VARIABLES */
-  // for inventory update
-  const [inventory, setInventory] = useState([])
-  // for adding items
-  const [openItem, setOpenItem] = useState(false)
-  const [itemName, setItemName] = useState('')
-  const handleOpen = () => setOpenItem(true)
-  const handleClose = () => setOpenItem(false)
-  // for bottom navbar
-  const [value, setValue] = useState(0)
-  // for top menu
-  const [openDrawer, setOpenDrawer] = useState(false)
-  // for search/filter
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filteredItems, setFilteredItems] = useState([])
-
-  /* ALL FUNCTIONS */
-  //updates inventory to match database status
-  const updateInventory = async () => {
-    const snapshot = query(collection(firestore, 'inventory'))
-    const docs = await getDocs(snapshot)
-    const inventoryList = []
-    docs.forEach((doc) => {
-      inventoryList.push({ name: doc.id, ...doc.data() })
-    })
-    setInventory(inventoryList)
-  }
-
-  //adds items to database
-  const addItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
-      await setDoc(docRef, { quantity: quantity + 1 })
-    } else {
-      await setDoc(docRef, { quantity: 1 })
-    }
-    await updateInventory()
-    alert('Item added successfully!')
-  }
-
-  //removes items from database
-  const removeItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
-      if (quantity === 1) {
-        await deleteDoc(docRef)
-      } else {
-        await setDoc(docRef, { quantity: quantity - 1 })
-      }
-    }
-    await updateInventory()
-    alert('Item removed successfully!')
-  }
-  useEffect(() => {
-    updateInventory()
-  }, [])
-
-  //toggles the sidebar menu
-  const toggleDrawer = (newOpen) => () => {
-    setOpenDrawer(newOpen)
-  }
-
-    
-//sidebar categories
-  const DrawerList = (
-  <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <List>
-      {['General'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-          <ListItemButton>
-              <ListItemIcon>
-              <RestaurantIcon/>
-              </ListItemIcon>
-              <ListItemText primary={text} />
-          </ListItemButton>
-          </ListItem>
-      ))}
-      </List>
-      <Divider />
-      <List>
-      {['Fruits', 'Vegetables', 'Grains', 'Protein', 'Dairy'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-          <ListItemButton>
-              <ListItemIcon>
-              <CreateIcon />
-              </ListItemIcon>
-              <ListItemText primary={text} />
-          </ListItemButton>
-          </ListItem>
-      ))}
-      </List>
-  </Box>
-  );
-
-  //adding functionality to search bar
-  useEffect(() => {
-    if (searchQuery) {
-      const filtered = inventory.filter(item =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()));
-        setFilteredItems(filtered);
-      } else {
-        setFilteredItems(inventory);
-      }
-    }, [searchQuery, inventory]) 
-
-  return <Box
+    return <Box
     width="100vw"
     height="100vh"
     display={'flex'}
@@ -186,52 +56,13 @@ export default function Home() {
         <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon onClick={toggleDrawer(true)} />
           <Drawer open={openDrawer} onClose={toggleDrawer(false)}>
-            {DrawerList}
+            {Categories}
           </Drawer>
         </IconButton>
         <Typography variant="h6" color="inherit" component="div">
           Pantry Tracker
         </Typography>
-        <Button sx={{ ml: 'auto', backgroundColor: '#c29243', color: '#fff', '&:hover': { backgroundColor: '#7a5f6e'}}}  
-          variant='contained' 
-          onClick={handleOpenSignIn}
-        >
-          Sign In
-        </Button>
       </Toolbar>
-      <Modal
-      open={openAcc}
-      onClose={handleCloseSignIn}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style}>
-        <Typography color='#5e3a47' id="modal-modal-title" variant="h6" component="h2">
-          Sign In
-        </Typography>
-        <Stack width="100%" direction={'column'} spacing={1} display='flex' alignItems='center'>
-          <TextField
-            id="outlined-basic"
-            label="Username"
-            variant="outlined"
-            fullWidth
-          />
-          <TextField
-            id="outlined-basic"
-            label='Password'
-            variant='outlined'
-            fullWidth
-          />
-          <Button sx={{ border: '1px solid #5e3a47', variant: 'outlined', width: '75%', color: '#5e3a47'}}
-            onClick={handleSignIn}>
-            Enter
-          </Button>
-          <Button sx={{ color: '#5e3a47' }} size='small' onClick={() => router.push('/sign-up')} >
-            Don&rsquo;t have an account?
-          </Button>
-        </Stack>
-      </Box>
-    </Modal>
     </AppBar>
     <Box sx={{ width: "90vw", display: 'flex', justifyContent: 'center', p: 1 }}>
       <TextField
